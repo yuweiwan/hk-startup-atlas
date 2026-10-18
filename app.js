@@ -8,6 +8,7 @@ const roundStageNames = {seed:'种子轮',angel:'天使轮',pre_a:'Pre-A',a:'A �
 const activityLabels = {entrepreneurial_intent:'有创业意向',company_founded:'成立公司',fundraising:'正在融资',funding_completed:'完成融资',unconfirmed:'完成状态待核实'};
 function completedDeal(e) { return e.status==='funding_completed' && e.countInFundingStats===true; }
 function activityDescription(e) {
+  if(e.dateBasis==='public_debut_report_month') return '创业亮相报道 · 非工商成立日期 · '+(e.summary||'');
   const note=e.dateBasis==='report_month'?'按报道月份计入':e.datePrecision==='year'?'仅知年份':'';
   const detail=['entrepreneurial_intent','company_founded'].includes(e.status)?e.summary:(e.investors?.slice(0,3).join('、')||(e.status==='fundraising'?'融资进行中 · 尚未完成':'投资方未披露'));
   return [detail,note].filter(Boolean).join(' · ');
