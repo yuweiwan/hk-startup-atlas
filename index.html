@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NexTide · 港校创投观察</title>
+  <meta name="description" content="港校关联初创企业、融资动态与投资机构可视化。">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <a class="skip-link" href="#main-content">跳转到内容</a>
+    <header class="workspace-header"><div class="header-inner">
+      <a class="brand" href="#home" aria-label="NexTide 首页"><img src="assets/favicon.svg" alt="" width="34" height="34"><span>NexTide<span class="brand-divider">/</span><small>港校创投</small></span></a>
+      <nav id="main-nav" aria-label="主导航">
+        <button disabled class="nav-item active" data-view="home">动态</button>
+        <button disabled class="nav-item" data-view="startups">公司库 <i id="nav-company-count">—</i></button>
+        <button disabled class="nav-item" data-view="statistics">统计分析</button>
+        <button disabled class="nav-item" data-view="investors">投资机构</button>
+        <button disabled class="nav-item" data-view="rankings">榜单</button>
+      </nav>
+      <label class="global-search"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input id="global-search" disabled aria-label="快速搜索公司" placeholder="搜索公司…"><kbd>/</kbd></label>
+    </div></header>
+    <main class="main" id="main-content" tabindex="-1">
+      <div class="topbar"><div class="breadcrumb">研究工作台 <span>/</span> <b id="crumb">动态首页</b></div><span class="update-status" role="status">正在加载档案</span></div>
+      <div id="load-error" class="error-banner hidden" role="alert"></div>
+      <section class="view active" id="view-home">
+        <div class="hero-row"><div><div class="eyebrow"><span class="tiny-line"></span> NexTide Observatory</div><h1>港校创新，正在发生<span class="title-dot">.</span></h1><p>跟踪创业公司与资本动向，让下一次判断更有依据。</p></div><div class="edition"><span>香港 · 创投观察</span><b id="hero-asof">—</b><span class="edition-rule"></span></div></div>
+        <div class="home-overview">
+          <div class="overview-metric"><span>收录公司</span><div><strong id="stat-companies">—</strong><small>家</small></div><p>持续更新的港校关联档案</p></div>
+          <div class="overview-metric"><span id="stat-funding-label">近 1 个月动态</span><div><strong id="stat-funding">—</strong><small>起</small></div><p id="home-round-note">A 轮之前 · 最新融资动态</p></div>
+          <div class="overview-story"><span class="eyebrow">本期观察</span><p id="home-observation">正在整理近期融资信号…</p><button class="text-link" data-go="statistics">进入统计分析 <span>↗</span></button></div>
+        </div>
+        <div class="home-columns">
+          <section class="funding-panel panel"><div class="panel-head"><div><h2>创业与融资动态 <span class="section-count" id="funding-result-count"></span></h2><p id="recent-window"></p></div><div class="panel-tools"><select id="recent-months" aria-label="融资时间范围"><option value="1">近 1 个月</option><option value="2">近 2 个月</option><option value="3">近 3 个月</option></select><select id="recent-status" aria-label="动态状态"><option value="all">全部状态</option><option value="entrepreneurial_intent">有创业意向</option><option value="company_founded">成立公司</option><option value="fundraising">正在融资</option><option value="funding_completed">完成融资</option></select><select id="recent-round-scope" aria-label="融资轮次范围"><option value="pre_a">A 轮之前</option><option value="all">全部轮次</option></select></div></div><div class="funding-table-labels"><span>时间</span><span>公司 / 状态与进展</span><span>披露金额</span><span></span></div><div id="recent-funding" class="event-list skeleton-list" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div><div class="panel-bottom">同公司同月合并 · 联合披露保留较晚轮次 · 浅蓝底为首次融资 <span>点击记录查看公司档案 ↗</span></div></section>
+          <aside class="home-insights"><section class="insight-panel"><div class="insight-heading"><h2>本期赛道</h2><span id="home-signal-window">近 1 个月</span></div><p class="muted">按公司月度动态统计 · 同月多状态计一条</p><div id="home-sector-chart"></div><button class="text-link" data-go="statistics">查看完整分布 ↗</button></section><section class="campus-panel"><div class="insight-heading"><h2>从校园出发</h2><span class="small-wave" aria-hidden="true">∿</span></div><p class="muted">循着校园背景，发现创业团队。</p><div id="home-campuses"></div><button class="text-link" data-go="startups">浏览公司库 ↗</button></section><div class="source-note"><span class="live-dot"></span><div>与公司 Profile 同步<small>新增与更新的档案自动汇入</small></div></div></aside>
+        </div>
+        <details class="data-method"><summary>数据口径与后续模块</summary><p>融资窗口按已记录的事件日期和轮次筛选；未披露日期的融资不计入。科研线索与活动日历尚未接入，待有可靠数据后展示。</p></details>
+      </section>
+      <section class="view" id="view-startups">
+        <div class="page-title"><div><div class="eyebrow">Company directory</div><h1>公司库<span class="title-dot">.</span></h1><p>按校园、主领域与融资阶段筛选港校关联创业公司。</p></div><div class="count-chip"><b id="result-count">20</b> 家公司</div></div>
+        <div class="filter-bar"><label class="searchbox"><span>⌕</span><input id="search" placeholder="搜索公司、创始人或关键词"></label><select id="filter-university"><option value="">全部港校</option></select><select id="filter-sector"><option value="">全部主领域</option></select><select id="filter-round"><option value="">全部轮次</option></select><select id="filter-valuation"><option value="">估值数据不限</option><option value="available">有估值数据</option><option value="unavailable">暂不可估值</option></select><button class="clear-filters" id="clear-filters">重置</button></div>
+        <div class="tag-row" id="quick-universities"></div>
+        <div class="company-grid" id="company-grid"></div>
+        <div class="data-footnote">标签映射自共享标签字典；港校关系表示创始人、团队成员或学术关联，不等同于学校背书。</div>
+      </section>
+      <section class="view" id="view-rankings">
+        <div class="page-title"><div><div class="eyebrow">Market rankings</div><h1>创业公司榜单<span class="title-dot">.</span></h1><p>已披露估值优先；缺失时按融资金额 × 10 估算，并统一换算为美元。</p></div><div class="count-chip">档案更新 <b id="rank-snapshot-date">2026.10.16</b></div></div>
+        <div class="tabs"><button class="tab active" data-rank="valuation">估值榜</button><button class="tab" data-rank="growth">增速榜</button></div>
+        <div id="valuation-board" class="board-panel panel"><div class="board-toolbar"><div><h3 id="rank-title">Top Startups</h3><p id="rank-subtitle">统一换算美元 · 按估值排序</p></div><div class="board-filters"><select id="rank-sector"><option value="">全部主领域</option></select></div></div><div class="board-legend"><span>排名</span><span>公司</span><span>最新轮次</span><span>估值（USD）</span><span>港校关联</span></div><div id="valuation-rows"></div><div class="board-note" id="valuation-note">估值优先采用公开披露值；缺失时按融资金额 × 10 估算。模糊融资额显示区间或下限。非美元估值按最新 ECB 日度参考汇率换算。</div></div>
+        <div id="growth-board" class="board-panel panel hidden"><div class="board-toolbar"><div><h3>Top Startup Growth</h3><p>估值增速斜率 = 估值变化 ÷ 时间长度 · USD / 年</p></div><select id="growth-sector"><option value="">全部主领域</option></select></div><div class="growth-legend"><span>排名</span><span>公司</span><span>估值变化线</span><span>估算斜率</span></div><div id="growth-rows"></div><div class="board-note">每个点来自已记录融资轮次的披露估值或融资额 × 10 估算值。线段只连接实际记录点，不代表轮次之间的连续估值轨迹；若金额为区间，斜率按区间中点计算。</div></div>
+      </section>
+      <section class="view" id="view-statistics">
+        <div class="page-title"><div><div class="eyebrow">Ecosystem intelligence</div><h1>看见资本流向<span class="title-dot">.</span></h1><p>从院校、赛道与融资节奏，观察港校创业生态。</p></div><select id="stats-window" aria-label="统计时间范围"><option value="all">全部年份</option><option value="3">近 3 个月</option><option value="6">近 6 个月</option><option value="12">近 12 个月</option><option value="36">近 3 年</option><option value="custom">自定义日期</option></select></div>
+        <div id="stats-custom" class="range-controls hidden"><label>开始日期 <input type="date" id="stats-from"></label><label>结束日期 <input type="date" id="stats-to"></label></div><p class="range-note" id="stats-range-note"></p><div class="stats-kpis" id="stats-kpis"></div>
+        <div class="stats-grid"><article class="panel stat-chart-card wide-chart"><div class="stat-chart-head"><div><span class="eyebrow">FUNDING MOMENTUM</span><h3 id="funding-chart-title">月度融资事件</h3><p id="funding-chart-note">按融资事件日期归档 · 未注明月份的事件不计入</p></div><label class="chart-year">查看年份 <select id="stats-year" aria-label="月度图表年份"></select></label></div><div id="monthly-chart" class="monthly-chart"></div></article><article class="panel stat-chart-card"><div class="stat-chart-head"><div><span class="eyebrow">CAMPUS FOUNDERS</span><h3>港校背景公司分布</h3><p id="school-chart-note"></p></div><span class="chart-mark">01</span></div><div id="school-chart" class="bar-chart"></div></article><article class="panel stat-chart-card"><div class="stat-chart-head"><div><span class="eyebrow">STARTUP MIX</span><h3>公司主领域占比</h3><p id="sector-chart-note"></p></div><span class="chart-mark">02</span></div><div id="sector-chart" class="donut-chart-wrap"></div></article><article class="panel stat-chart-card"><div class="stat-chart-head"><div><span class="eyebrow">ROUND STAGES</span><h3>融资轮次结构</h3><p id="round-chart-note"></p></div><span class="chart-mark">04</span></div><div id="round-chart" class="bar-chart"></div></article><article class="panel stat-chart-card"><div class="stat-chart-head"><div><span class="eyebrow">CAPITAL ACTIVITY</span><h3>活跃机构 Top 10</h3><p>观察范围内参与融资的次数 · 同轮联合投资分别计入</p></div><span class="chart-mark">05</span></div><div id="active-investor-chart" class="bar-chart"></div></article><article class="panel stat-chart-card wide-chart"><div class="stat-chart-head"><div><span class="eyebrow">ANNUAL OVERVIEW</span><h3>年度融资分布</h3><p>观察范围内按年份汇总 · 包含仅知年份的记录</p></div><span class="chart-mark">06</span></div><div id="annual-chart" class="bar-chart"></div></article></div>
+        <div class="data-footnote">院校按公司 Profile 中记录的创始人、团队或学术关联统计；同一家公司可关联多所学校，因此院校比例不互斥。公司类型使用主领域。日期精度不足以判断是否落在筛选范围的记录不计入；仅知年份的融资不分配到月份。所有图表随档案同步重新计算。</div>
+      </section>
+      <section class="view" id="view-investors">
+        <div class="page-title"><div><div class="eyebrow">Capital directory</div><h1>投资机构<span class="title-dot">.</span></h1><p>从融资事件反查投资方实体的投资时间、轮次与公司。</p></div><div class="count-chip"><b id="investor-count">—</b> 个实体</div></div>
+        <div id="investor-directory" class="investor-summary"><div class="panel investor-list-panel"><div class="panel-head"><div><h3>投资方实体库</h3><p>按标准机构名称统计参与事件数</p></div><span class="pill">可搜索</span></div><label class="searchbox investor-search"><span>⌕</span><input id="investor-search" placeholder="搜索投资机构或别名"></label><div id="investor-list"></div><div class="directory-pagination"><div id="investor-list-note" class="investor-list-note"></div><div><button id="investor-prev" aria-label="上一页机构">← 上一页</button><button id="investor-next" aria-label="下一页机构">下一页 →</button></div></div></div><details class="panel timeline-panel"><summary>浏览全部融资时间线 <span>展开 ↓</span></summary><div class="panel-head"><div><h3>融资时间线</h3><p>每一条融资事件与参与投资方</p></div><select id="timeline-sort"><option value="desc">最新优先</option><option value="asc">最早优先</option></select></div><div id="investor-timeline"></div></details></div>
+        <section id="investor-profile" class="hidden"><button class="text-link investor-back" data-investor-back>← 返回投资机构</button><div class="investor-profile-hero panel"><div><div class="eyebrow">INVESTOR PROFILE</div><h2 id="investor-profile-name"></h2><p id="investor-profile-aliases"></p></div><label>观察窗口<select id="investor-period"><option value="3">近 3 个月</option><option value="6">近 6 个月</option><option value="12">近 12 个月</option></select></label></div><div id="investor-profile-kpis" class="stats-kpis"></div><div class="investor-profile-grid"><article class="panel stat-chart-card"><div class="stat-chart-head"><div><span class="eyebrow">PORTFOLIO MIX</span><h3>近期投资类型</h3><p>按去重被投公司的第一个主领域统计</p></div></div><div id="investor-type-chart" class="donut-chart-wrap"></div></article><article class="panel stat-chart-card"><div class="stat-chart-head"><div><span class="eyebrow">RECENT PORTFOLIO</span><h3>观察窗口内的投资组合</h3><p id="investor-portfolio-note"></p></div></div><div id="investor-portfolio" class="portfolio-list"></div></article></div><article class="panel investor-history-panel"><div class="stat-chart-head"><div><span class="eyebrow">INVESTMENT HISTORY</span><h3>历史投资时间线</h3><p>按事件日期从近到远排列；日期未详的记录列在末尾。</p></div></div><div id="investor-history" class="investor-history-list"></div></article></section>
+        <div class="data-footnote">同一融资事件可能包含多家机构；名称统一映射到标准实体，原始写法保留为别名；母公司、管理人及独立基金不按相似名称强行合并。未披露日期的事件列为“日期未详”。</div>
+      </section>
+      <footer class="footer"><span><b>NexTide</b> · 港校创投观察</span><span class="snapshot-meta"><span id="snapshot-company-count">—</span> 份档案 · <b id="snapshot-date">—</b></span><span>数据截至 <b id="footer-date">2026.10.16</b></span></footer>
+    </main>
+  </div>
+  <div class="modal-backdrop hidden" id="modal"><article class="detail-modal" role="dialog" aria-modal="true" aria-label="公司档案" tabindex="-1"><button class="modal-close" id="modal-close" aria-label="关闭公司档案">×</button><div id="modal-content"></div></article></div>
+  <script src="app.js"></script>
+</body></html>
