@@ -13,6 +13,7 @@
       <a class="brand" href="#home" aria-label="NexTide 首页"><img src="assets/favicon.svg" alt="" width="34" height="34"><span>NexTide<span class="brand-divider">/</span><small>港校创投</small></span></a>
       <nav id="main-nav" aria-label="主导航">
         <button disabled class="nav-item active" data-view="home">动态</button>
+        <button disabled class="nav-item" data-view="events">创投活动</button>
         <button disabled class="nav-item" data-view="startups">公司库 <i id="nav-company-count">—</i></button>
         <button disabled class="nav-item" data-view="statistics">统计分析</button>
         <button disabled class="nav-item" data-view="investors">投资机构</button>
@@ -34,7 +35,14 @@
           <section class="funding-panel panel"><div class="panel-head"><div><h2>创业与融资动态 <span class="section-count" id="funding-result-count"></span></h2><p id="recent-window"></p></div><div class="panel-tools"><select id="recent-months" aria-label="融资时间范围"><option value="1">近 1 个月</option><option value="2">近 2 个月</option><option value="3">近 3 个月</option></select><select id="recent-status" aria-label="动态状态"><option value="all">全部状态</option><option value="entrepreneurial_intent">有创业意向</option><option value="company_founded">成立公司</option><option value="fundraising">正在融资</option><option value="funding_completed">完成融资</option></select><select id="recent-round-scope" aria-label="融资轮次范围"><option value="pre_a">A 轮之前</option><option value="all">全部轮次</option></select></div></div><div class="funding-table-labels"><span>时间</span><span>公司 / 状态与进展</span><span>披露金额</span><span></span></div><div id="recent-funding" class="event-list skeleton-list" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div><div class="panel-bottom">同公司同月合并 · 联合披露保留较晚轮次 · 浅蓝底为首次融资 <span>点击记录查看公司档案 ↗</span></div></section>
           <aside class="home-insights"><section class="insight-panel"><div class="insight-heading"><h2>本期赛道</h2><span id="home-signal-window">近 1 个月</span></div><p class="muted">按公司月度动态统计 · 同月多状态计一条</p><div id="home-sector-chart"></div><button class="text-link" data-go="statistics">查看完整分布 ↗</button></section><section class="campus-panel"><div class="insight-heading"><h2>从校园出发</h2><span class="small-wave" aria-hidden="true">∿</span></div><p class="muted">循着校园背景，发现创业团队。</p><div id="home-campuses"></div><button class="text-link" data-go="startups">浏览公司库 ↗</button></section><div class="source-note"><span class="live-dot"></span><div>与公司 Profile 同步<small>新增与更新的档案自动汇入</small></div></div></aside>
         </div>
-        <details class="data-method"><summary>数据口径与后续模块</summary><p>融资窗口按已记录的事件日期和轮次筛选；未披露日期的融资不计入。科研线索与活动日历尚未接入，待有可靠数据后展示。</p></details>
+        <section class="panel calendar-preview"><div class="panel-head"><div><h2>近期创投活动</h2><p>科技创业、项目路演与投资对接 · 香港时间</p></div><button class="text-link" data-go="events">浏览活动日历 ↗</button></div><div id="home-events" class="calendar-grid"></div></section>
+        <details class="data-method"><summary>数据口径</summary><p>融资窗口按事件日期和轮次筛选。活动逐场筛选，仅收录科技创业及创投相关内容；日期与来源随记录展示，报名安排以主办方最新公告为准。</p></details>
+      </section>
+      <section class="view" id="view-events">
+        <div class="page-title"><div><div class="eyebrow">Founder & investor calendar</div><h1>创投活动<span class="title-dot">.</span></h1><p>寻找项目、资本与下一次交流机会。日期均为香港时间。</p></div><div class="count-chip"><b id="calendar-count">—</b> 场</div></div>
+        <div class="filter-bar"><label class="searchbox"><input id="calendar-search" aria-label="搜索活动" placeholder="搜索主题、主办方或地点"></label><select id="calendar-period" aria-label="活动时间"><option value="upcoming">近期与即将举行</option><option value="past">已结束</option><option value="all">全部记录</option></select><select id="calendar-type" aria-label="活动类型"><option value="">全部类型</option><option>创投论坛</option><option>投资对接</option><option>项目对接</option><option>创业比赛</option><option>创业展示</option><option>创业交流</option></select></div>
+        <div id="calendar-results" class="calendar-grid" aria-live="polite"></div>
+        <p class="data-footnote">仅展示经正文筛选的科技创业与创投活动。活动尚未结束不代表报名开放；参会资格、名额及最新安排以主办方为准。</p>
       </section>
       <section class="view" id="view-startups">
         <div class="page-title"><div><div class="eyebrow">Company directory</div><h1>公司库<span class="title-dot">.</span></h1><p>按校园、主领域与融资阶段筛选港校关联创业公司。</p></div><div class="count-chip"><b id="result-count">20</b> 家公司</div></div>

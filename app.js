@@ -1,6 +1,38 @@
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 let today = new Date();
+let ventureEvents = [];
+function calendarToday(now=new Date()) {
+  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);
+  return ['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');
+}
+function calendarState(e,day=calendarToday()) {
+  if(e.status==='cancelled')return '已取消';
+  if(e.status==='postponed')return '已延期';
+  if(e.endDate<day)return '已结束';
+  if(e.deadline&&e.deadline<day)return '报名已截止';
+  if(e.startDate<=day)return '活动当日 / 期间';
+  return '即将举行';
+}
+function calendarEscape(s) { return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function calendarLink(url,label) {
+  if(!/^https:\/\//i.test(url||''))return '';
+  return `<a href="${calendarEscape(url)}" target="_blank" rel="noopener noreferrer">${calendarEscape(label)} ↗</a>`;
+}
+function calendarCard(e) {
+  const x=calendarEscape, status=calendarState(e), ended=['已结束','已取消','已延期'].includes(status);
+  return `<article class="calendar-card ${ended?'calendar-past':''}"><div class="calendar-top"><span>${x(e.type)}</span><span class="calendar-status">${status}</span></div><div class="calendar-date">${x(e.startDate.slice(5).replace('-','.'))}${e.endDate!==e.startDate?' — '+x(e.endDate.slice(5).replace('-','.')):''}<small>${x(e.startDate.slice(0,4))}${e.time?' · '+x(e.time):''}</small></div><h3>${x(e.title)}</h3><p>${x(e.summary)}</p><div class="calendar-meta">${x(e.location)}${e.organizer?'<br>'+x(e.organizer):''}</div>${e.deadline?'<p class="calendar-note">报名截止：'+x(e.deadline)+'</p>':''}${e.registrationNote?'<p class="calendar-note">'+x(e.registrationNote)+'</p>':''}<div class="calendar-links">${calendarLink(e.officialUrl,'官方详情')}${!ended&&status!=='报名已截止'?calendarLink(e.registrationUrl,'申请参加'):''}${e.sources.map(s=>calendarLink(s.url,'报道原文')).join('')}</div></article>`;
+}
+function renderCalendar() {
+  const day=calendarToday(), period=$('#calendar-period').value||'upcoming', type=$('#calendar-type').value, q=$('#calendar-search').value.trim().toLowerCase();
+  const ordered=[...ventureEvents].sort((a,b)=>a.startDate.localeCompare(b.startDate)||a.id.localeCompare(b.id));
+  const current=ordered.filter(e=>e.endDate>=day&&e.status==='scheduled');
+  $('#home-events').innerHTML=current.slice(0,3).map(calendarCard).join('')||'<p class="calendar-empty">暂无近期活动。</p>';
+  let rows=ordered.filter(e=>(period==='all'||(period==='past'?e.endDate<day:e.endDate>=day))&&(!type||e.type===type)&&(!q||[e.title,e.summary,e.location,e.organizer].join(' ').toLowerCase().includes(q)));
+  if(period==='past')rows.reverse();
+  $('#calendar-count').textContent=rows.length;
+  $('#calendar-results').innerHTML=rows.map(calendarCard).join('')||'<p class="calendar-empty">没有符合条件的活动，试试其他时间或关键词。</p>';
+}
 let companies = [], investors = [], activeQuick = '', currentRank = 'valuation', fx = {}, activeInvestorId = '', investorPage = 1, modalOrigin = null;
 const universityNames = ['香港大学','香港中文大学','香港科技大学','香港城市大学','香港理工大学','香港浸会大学','香港中文大学（深圳）','香港科技大学（广州）'];
 const sectorNames = {physical_ai:'具身 / 物理 AI',ai_software:'AI 软件',ai_hardware:'AI 硬件',semiconductor:'半导体',quantum:'量子科技',biotech:'生物科技',medtech:'医疗科技',healthcare:'医疗健康',new_energy:'新能源',advanced_materials:'先进材料',consumer:'消费科技',saas:'SaaS',fintech:'金融科技',consumer_hardware:'消费硬件',space:'商业航天',logistics:'物流科技',agritech:'农业科技',greentech:'绿色科技',edtech:'教育科技',other:'其他',unknown:'未分类',digital_assets:'数字资产',hr_service:'人力资源服务',embodied_ai:'具身智能',humanoid_robotics:'人形机器人',llm:'大模型',multimodal_ai:'多模态 AI',generative_ai:'生成式 AI',ai_agent:'AI Agent',computer_vision:'计算机视觉',data_infrastructure:'数据基础设施','3d_animation':'3D 动画',digital_human:'数字人',service_robot:'服务机器人','3d_vision':'3D 视觉',ivd:'体外诊断',wearable:'可穿戴设备',space_resource_mining:'太空资源',photonics:'光子学',edge_ai:'边缘 AI'};
@@ -253,12 +285,12 @@ function goView(view) {
   $$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${view}`));
   $$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
   $$('.nav-item').forEach(x=>{if(x.dataset.view===view)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current');});
-  $('#crumb').textContent={home:'动态首页',startups:'公司库',rankings:'榜单',statistics:'统计分析',investors:'投资机构'}[view]; window.scrollTo(0,0);
+  $('#crumb').textContent={home:'动态首页',events:'创投活动',startups:'公司库',rankings:'榜单',statistics:'统计分析',investors:'投资机构'}[view]; window.scrollTo(0,0);
 }
 let dataRevision='', refreshBusy=false;
 async function loadData() {
   const response=await fetch('./data.json',{cache:'no-store'});if(!response.ok)throw new Error('数据读取失败');
-  const data=await response.json();companies=data.companies; investors=data.investors||[]; fx=data.fx;
+  const data=await response.json();companies=data.companies; investors=data.investors||[]; fx=data.fx; ventureEvents=data.ventureEvents||[];
   today=new Date();
   const years=[...new Set(companies.flatMap(c=>c.events.map(e=>e.date?.slice(0,4))).filter(Boolean))].sort().reverse();
   const selectedYear=$('#stats-year').value;
@@ -276,10 +308,11 @@ async function loadData() {
   const stamp=data.asOf.replaceAll('-','.'); $('#snapshot-date').textContent=stamp; $('#footer-date').textContent=stamp; $('#rank-snapshot-date').textContent=stamp;
   $('#hero-asof').textContent=new Intl.DateTimeFormat('en-US',{month:'short',day:'2-digit',year:'numeric'}).format(new Date(`${data.asOf}T00:00:00`)).toUpperCase();
   setupFilters();filterIds.forEach((id,i)=>{if([...$('#'+id).options].some(o=>o.value===selected[i]))$('#'+id).value=selected[i];});
-  renderHome(); renderCompanies(); renderBoard(); renderGrowth(); renderStatistics(); renderInvestors();
+  renderHome(); renderCompanies(); renderBoard(); renderGrowth(); renderStatistics(); renderInvestors(); renderCalendar();
   if(activeInvestorId)renderInvestorProfile();
 }
 async function refreshData() {
+  renderCalendar();
   if(refreshBusy||document.hidden)return;refreshBusy=true;
   try {
     const hosted=!['localhost','127.0.0.1'].includes(location.hostname);
@@ -295,6 +328,7 @@ async function refreshData() {
 async function init() {
   $('#stats-from').value=`${today.getFullYear()}-01-01`;$('#stats-to').value=localDateValue(today);
   await loadData();setInterval(refreshData,15000);
+  ['calendar-search','calendar-period','calendar-type'].forEach(id=>$('#'+id).addEventListener('input',renderCalendar));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshData();});
   $('#investor-profile').addEventListener('click',e=>{const card=e.target.closest('[data-company]');if(card)showCompany(card.dataset.company);});
   $('#investor-profile').addEventListener('keydown',e=>{const card=e.target.closest('[data-company]');if(card&&['Enter',' '].includes(e.key)){e.preventDefault();showCompany(card.dataset.company);}});
