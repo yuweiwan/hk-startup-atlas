@@ -24,6 +24,7 @@ function calendarCard(e) {
   return `<article class="calendar-card ${ended?'calendar-past':''}"><div class="calendar-top"><span>${x(e.type)}</span><span class="calendar-status">${status}</span></div><div class="calendar-date">${x(e.startDate.slice(5).replace('-','.'))}${e.endDate!==e.startDate?' — '+x(e.endDate.slice(5).replace('-','.')):''}<small>${x(e.startDate.slice(0,4))}${e.time?' · '+x(e.time):''}</small></div><h3>${x(e.title)}</h3><p>${x(e.summary)}</p><div class="calendar-meta">${x(e.location)}${e.organizer?'<br>'+x(e.organizer):''}</div>${e.deadline?'<p class="calendar-note">报名截止：'+x(e.deadline)+'</p>':''}${e.registrationNote?'<p class="calendar-note">'+x(e.registrationNote)+'</p>':''}<div class="calendar-links">${calendarLink(e.officialUrl,'官方详情')}${!ended&&status!=='报名已截止'?calendarLink(e.registrationUrl,'申请参加'):''}${e.sources.map(s=>calendarLink(s.url,'报道原文')).join('')}</div></article>`;
 }
 function renderCalendar() {
+  if(!$('#calendar-period'))return;
   const day=calendarToday(), period=$('#calendar-period').value||'upcoming', type=$('#calendar-type').value, q=$('#calendar-search').value.trim().toLowerCase();
   const ordered=[...ventureEvents].sort((a,b)=>a.startDate.localeCompare(b.startDate)||a.id.localeCompare(b.id));
   const current=ordered.filter(e=>e.endDate>=day&&e.status==='scheduled');
@@ -288,9 +289,29 @@ function goView(view) {
   $('#crumb').textContent={home:'动态首页',events:'创投活动',startups:'公司库',rankings:'榜单',statistics:'统计分析',investors:'投资机构'}[view]; window.scrollTo(0,0);
 }
 let dataRevision='', refreshBusy=false;
-async function loadData() {
-  const response=await fetch('./data.json',{cache:'no-store'});if(!response.ok)throw new Error('数据读取失败');
-  const data=await response.json();companies=data.companies; investors=data.investors||[]; fx=data.fx; ventureEvents=data.ventureEvents||[];
+async function fetchSnapshot(revision='') {
+  const hosted=!['localhost','127.0.0.1'].includes(location.hostname);
+  const compressed=hosted&&typeof DecompressionStream!=='undefined';
+  let lastError;
+  for(let attempt=0;attempt<3;attempt++) {
+    const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),60000);
+    try {
+      const useGzip=compressed&&attempt<2;
+      const url=(useGzip?'./data.json.gz':'./data.json')+(revision?'?v='+encodeURIComponent(revision):'');
+      const response=await fetch(url,{cache:attempt?'reload':'no-cache',signal:controller.signal});
+      if(!response.ok)throw new Error('数据请求失败：HTTP '+response.status);
+      const body=useGzip?new Response(response.body.pipeThrough(new DecompressionStream('gzip'))):response;
+      const data=await body.json();
+      if(!Array.isArray(data.companies)||!data.asOf)throw new Error('档案数据格式不完整');
+      return data;
+    }catch(error){lastError=error;}
+    finally{clearTimeout(timer);}
+    if(attempt<2){$('.update-status').textContent='正在重新连接档案…';await new Promise(resolve=>setTimeout(resolve,800));}
+  }
+  throw lastError;
+}
+async function loadData(revision='') {
+  const data=await fetchSnapshot(revision);companies=data.companies; investors=data.investors||[]; fx=data.fx; ventureEvents=data.ventureEvents||[];
   today=new Date();
   const years=[...new Set(companies.flatMap(c=>c.events.map(e=>e.date?.slice(0,4))).filter(Boolean))].sort().reverse();
   const selectedYear=$('#stats-year').value;
@@ -310,6 +331,7 @@ async function loadData() {
   setupFilters();filterIds.forEach((id,i)=>{if([...$('#'+id).options].some(o=>o.value===selected[i]))$('#'+id).value=selected[i];});
   renderHome(); renderCompanies(); renderBoard(); renderGrowth(); renderStatistics(); renderInvestors(); renderCalendar();
   if(activeInvestorId)renderInvestorProfile();
+  $('#load-error').classList.add('hidden');$('.update-status').textContent='档案已载入';
 }
 async function refreshData() {
   renderCalendar();
@@ -319,7 +341,7 @@ async function refreshData() {
     const response=await fetch(hosted?'./release.json':'/api/status',{cache:'no-store'});
     if(!response.ok){$('.update-status').textContent='已发布快照 · 暂未取得更新状态';return;}
     const status=await response.json();
-    if(status.revision!==dataRevision){await loadData();dataRevision=status.revision;}
+    if(status.revision!==dataRevision){await loadData(status.revision);dataRevision=status.revision;}
     $('.update-status').textContent=status.error?'同步失败 · 保留上次数据':'● 数据已同步';
     $('.update-status').title=status.error||'每 15 秒检查已发布数据版本';
   }catch(e){$('.update-status').textContent='连接中断 · 显示上次数据';}
@@ -328,7 +350,7 @@ async function refreshData() {
 async function init() {
   $('#stats-from').value=`${today.getFullYear()}-01-01`;$('#stats-to').value=localDateValue(today);
   await loadData();setInterval(refreshData,15000);
-  ['calendar-search','calendar-period','calendar-type'].forEach(id=>$('#'+id).addEventListener('input',renderCalendar));
+  ['calendar-search','calendar-period','calendar-type'].forEach(id=>$('#'+id)?.addEventListener('input',renderCalendar));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshData();});
   $('#investor-profile').addEventListener('click',e=>{const card=e.target.closest('[data-company]');if(card)showCompany(card.dataset.company);});
   $('#investor-profile').addEventListener('keydown',e=>{const card=e.target.closest('[data-company]');if(card&&['Enter',' '].includes(e.key)){e.preventDefault();showCompany(card.dataset.company);}});
@@ -367,4 +389,4 @@ async function init() {
   $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeCompany();});
   $('#global-search').disabled=false;$$('#main-nav button').forEach(b=>b.disabled=false);refreshData();
 }
-init().catch(e=>{console.error(e);$('#load-error').classList.remove('hidden');$('#load-error').textContent='暂时无法读取档案。请确认本地数据服务已启动，然后刷新页面重试。';$('.update-status').textContent='数据未载入';});
+init().catch(e=>{console.error(e);$('#load-error').classList.remove('hidden');$('#load-error').textContent='档案加载未完成，请检查网络后重试。';const retry=document.createElement('button');retry.type='button';retry.textContent='重新加载';retry.addEventListener('click',()=>location.reload());$('#load-error').append(' ',retry);$('.update-status').textContent='数据未载入';});

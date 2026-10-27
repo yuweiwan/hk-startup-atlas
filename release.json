@@ -3,5 +3,11 @@
   "count": 246,
   "asOf": "2026-10-27",
   "mode": "published",
-  "error": null
+  "error": null,
+  "assetRevisions": {
+    "index.html": "a6788e36fb81d8f589d81aabc05d67536b02db3b32865e6d5bbc7809fcdca9cb",
+    "app.js": "2c49794af4bd1e53fb589fd54da3f799cf213088fbd37b3c62e4b38db2c59d3a",
+    "style.css": "c9fe2ba29a0d8033bfc9120d421187eda5af9f0c69326c9d0113ddc9570545af",
+    "data.json.gz": "435c39f435e3025e37bcd9c9766f6d94f7ae471be1f9522ecadaea07a3c00941"
+  }
 }
