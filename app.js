@@ -294,7 +294,7 @@ async function fetchSnapshot(revision='') {
   const compressed=hosted&&typeof DecompressionStream!=='undefined';
   let lastError;
   for(let attempt=0;attempt<3;attempt++) {
-    const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),60000);
+    const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),180000);
     try {
       const useGzip=compressed&&attempt<2;
       const url=(useGzip?'./data.json.gz':'./data.json')+(revision?'?v='+encodeURIComponent(revision):'');
