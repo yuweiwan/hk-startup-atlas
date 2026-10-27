@@ -63,3 +63,17 @@ select{min-height:36px;padding:7px 32px 7px 12px;border:1px solid #e0e6ef;border
 @media(max-width:1100px){.calendar-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.calendar-grid{grid-template-columns:1fr}.calendar-card{padding:20px}.calendar-preview .calendar-grid{padding:0 14px}.calendar-preview .panel-head{flex-wrap:wrap}}
 @media(max-width:760px){.recent-event{grid-template-columns:42px minmax(0,1fr) 10px;gap:8px;padding:18px 14px}.recent-event .event-main{grid-column:2}.recent-event .event-amount{grid-column:2;text-align:left;color:#315784;font-size:12px;margin-top:4px}.recent-event .row-arrow{grid-column:3;grid-row:1/3;align-self:center}.event-company{gap:5px}.event-tags{gap:4px}.activity-status{font-size:10px}.event-description{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.event-rounds{font-size:10px}.event-date{align-self:start;padding-top:3px}}
+
+/* Research and company news reuse the journal-like event list. */
+.recent-event.is-company-founded{background:#edf7f2;box-shadow:inset 3px 0 0 #258364}
+.recent-event.is-company-founded:hover{background:#dfefe6}
+.recent-event.is-company-founded .status-company_founded{background:#d2eadd;color:#16593e;font-weight:700}
+.recent-event.is-company-founded.is-fundraising{box-shadow:inset 3px 0 0 #2563eb;background:#eaf2ff}
+.knowledge-panel{margin:24px 0}.knowledge-panel .filter-bar{margin:0;padding:16px 24px;border-bottom:1px solid #e9edf1}
+.knowledge-row{display:grid;grid-template-columns:180px minmax(0,1fr);gap:22px;padding:22px 24px;border-bottom:1px solid #e9edf1}
+.knowledge-date{font-size:12px;line-height:1.8;color:#657185;font-variant-numeric:tabular-nums}
+.knowledge-heading{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.company-news-name{border:0;background:none;padding:0;color:#163d69;font:inherit;font-size:16px;font-weight:700;cursor:pointer;text-align:left}.company-news-name:hover{text-decoration:underline}
+.knowledge-content p,.research-summary{font-size:14px;line-height:1.8;margin:8px 0;color:#3f4c60;display:block}.knowledge-sources{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:12px}.knowledge-sources a{color:#42658c;overflow-wrap:anywhere}.stream-pagination{padding:16px 24px;text-align:center}.stream-pagination button[hidden]{display:none}
+.research-row{display:block}.research-row summary{display:grid;grid-template-columns:180px minmax(0,1fr) auto;gap:22px;cursor:pointer;list-style:none}.research-row summary::-webkit-details-marker{display:none}.research-team{font-size:12px;line-height:1.7;color:#657185;display:block}.research-expand{font-size:12px;color:#42658c}.research-row[open]{background:#f8fafc}.research-details{margin-left:202px;font-size:14px;line-height:1.8}.knowledge-row:last-child{border-bottom:0}
+#main-nav{overflow-x:auto}.company-news-name:focus-visible,.research-row summary:focus-visible{outline:2px solid #2563eb;outline-offset:4px}
+@media(max-width:760px){.knowledge-row{grid-template-columns:1fr;gap:8px;padding:18px}.research-row summary{grid-template-columns:1fr;gap:8px}.research-details{margin-left:0}.research-expand{display:none}.knowledge-panel .filter-bar{padding:14px}.knowledge-panel .filter-bar>*{min-width:0}.knowledge-heading{gap:8px}}

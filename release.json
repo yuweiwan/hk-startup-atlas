@@ -1,13 +1,13 @@
 {
-  "revision": "e345b8b9153673a03be49629c954e4fdb331b31f3dd8c634b327ef21ac31edb5",
+  "revision": "546bc9948bd616b005f41af2c384ab7974b2e28c4fae882a2106623e1abcd4a8",
   "count": 248,
   "asOf": "2026-10-28",
   "mode": "published",
   "error": null,
   "assetRevisions": {
-    "index.html": "97e847b3ad7666b9bafc7a9b9971e081de1471030fe63d1e15cb3f30993e1870",
-    "app.js": "ed585005445205b33ad3ed0f047c23cbd93f9b87311f94f30916297546e15dc4",
-    "style.css": "9171a1879ea55fe46658dad6b06d9d0bd5ab7ea9d16a237cf90c32b919e9edab",
-    "data.json.gz": "097c871fb0b6aff169c1f442a78f8950121f944daa6c2a49a4974e2ec063d1f6"
+    "index.html": "7758d443c5f22cd2cfa995dcec018bdc561939fc3962c7118ac53649e7c50e6e",
+    "app.js": "8aa52982328838f8512d154ec01f08826f9db9e4e1e5da8920896cb0d0627884",
+    "style.css": "06c3fc40ac6cd4f774a25c77946d9452473602b5f592961ed0ff5f2062cf7ebc",
+    "data.json.gz": "3339e79330dd04fff0937ff99206d2507ba38604db5d8a73cb2adc4bcb5cceee"
   }
 }

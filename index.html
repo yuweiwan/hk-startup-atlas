@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>NexTide · 港校创投观察</title>
   <meta name="description" content="港校关联初创企业、融资动态与投资机构可视化。">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"><link rel="stylesheet" href="style.css?v=9171a1879ea55fe4">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"><link rel="stylesheet" href="style.css?v=06c3fc40ac6cd4f7">
 </head>
 <body>
   <div class="app-shell">
@@ -18,6 +18,7 @@
         <button disabled class="nav-item" data-view="statistics">统计分析</button>
         <button disabled class="nav-item" data-view="investors">投资机构</button>
         <button disabled class="nav-item" data-view="rankings">榜单</button>
+        <button disabled class="nav-item" data-view="research">科研成果</button>
       </nav>
       <label class="global-search"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input id="global-search" disabled aria-label="快速搜索公司" placeholder="搜索公司…"><kbd>/</kbd></label>
     </div></header>
@@ -35,6 +36,7 @@
           <section class="funding-panel panel"><div class="panel-head"><div><h2>创业与融资动态 <span class="section-count" id="funding-result-count"></span></h2><p id="recent-window"></p></div><div class="panel-tools"><select id="recent-months" aria-label="融资时间范围"><option value="1">近 1 个月</option><option value="2">近 2 个月</option><option value="3">近 3 个月</option></select><select id="recent-status" aria-label="动态状态"><option value="all">全部状态</option><option value="entrepreneurial_intent">有创业意向</option><option value="company_founded">成立公司</option><option value="fundraising">正在融资</option><option value="funding_completed">完成融资</option></select><select id="recent-round-scope" aria-label="融资轮次范围"><option value="pre_a">A 轮之前</option><option value="all">全部轮次</option></select></div></div><div class="funding-table-labels"><span>时间</span><span>公司 / 状态与进展</span><span>披露金额</span><span></span></div><div id="recent-funding" class="event-list skeleton-list" aria-live="polite"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div><div class="panel-bottom">同公司同月合并 · 联合披露保留较晚轮次 · 浅蓝底为首次融资 <span>点击记录查看公司档案 ↗</span></div></section>
           <aside class="home-insights"><section class="insight-panel"><div class="insight-heading"><h2>本期赛道</h2><span id="home-signal-window">近 1 个月</span></div><p class="muted">按公司月度动态统计 · 同月多状态计一条</p><div id="home-sector-chart"></div><button class="text-link" data-go="statistics">查看完整分布 ↗</button></section><section class="campus-panel"><div class="insight-heading"><h2>从校园出发</h2><span class="small-wave" aria-hidden="true">∿</span></div><p class="muted">循着校园背景，发现创业团队。</p><div id="home-campuses"></div><button class="text-link" data-go="startups">浏览公司库 ↗</button></section><div class="source-note"><span class="live-dot"></span><div>与公司 Profile 同步<small>新增与更新的档案自动汇入</small></div></div></aside>
         </div>
+        <section class="panel knowledge-panel"><div class="panel-head"><div><h2>公司动态 <span class="section-count" id="news-count"></span></h2><p>产品、研究与经营进展 · 点击公司查看背景与融资档案</p></div></div><div class="filter-bar"><label class="searchbox"><input id="news-search" aria-label="搜索公司动态" placeholder="搜索公司、产品或研究"></label><select id="news-type" aria-label="公司动态类型"><option value="">全部类型</option><option value="product">产品发布</option><option value="research">研究发表</option><option value="commercial">商业进展</option><option value="milestone">发展进展</option></select><select id="news-period" aria-label="公司动态时间"><option value="1">近1个月报道</option><option value="3">近3个月报道</option><option value="all">全部记录</option></select></div><div id="company-news" aria-live="polite"></div><div class="stream-pagination"><button id="news-more" class="text-link">加载更多动态 ↓</button></div></section>
         <section class="panel calendar-preview"><div class="panel-head"><div><h2>近期创投活动</h2><p>科技创业、项目路演与投资对接 · 香港时间</p></div><button class="text-link" data-go="events">浏览活动日历 ↗</button></div><div id="home-events" class="calendar-grid"></div></section>
         <details class="data-method"><summary>数据口径</summary><p>融资窗口按事件日期和轮次筛选。活动逐场筛选，仅收录科技创业及创投相关内容；日期与来源随记录展示，报名安排以主办方最新公告为准。</p></details>
       </section>
@@ -57,6 +59,7 @@
         <div id="valuation-board" class="board-panel panel"><div class="board-toolbar"><div><h3 id="rank-title">Top Startups</h3><p id="rank-subtitle">统一换算美元 · 按估值排序</p></div><div class="board-filters"><select id="rank-sector"><option value="">全部主领域</option></select></div></div><div class="board-legend"><span>排名</span><span>公司</span><span>最新轮次</span><span>估值（USD）</span><span>港校关联</span></div><div id="valuation-rows"></div><div class="board-note" id="valuation-note">估值优先采用公开披露值；缺失时按融资金额 × 10 估算。模糊融资额显示区间或下限。非美元估值按最新 ECB 日度参考汇率换算。</div></div>
         <div id="growth-board" class="board-panel panel hidden"><div class="board-toolbar"><div><h3>Top Startup Growth</h3><p>估值增速斜率 = 估值变化 ÷ 时间长度 · USD / 年</p></div><select id="growth-sector"><option value="">全部主领域</option></select></div><div class="growth-legend"><span>排名</span><span>公司</span><span>估值变化线</span><span>估算斜率</span></div><div id="growth-rows"></div><div class="board-note">每个点来自已记录融资轮次的披露估值或融资额 × 10 估算值。线段只连接实际记录点，不代表轮次之间的连续估值轨迹；若金额为区间，斜率按区间中点计算。</div></div>
       </section>
+      <section class="view" id="view-research"><div class="page-title"><div><div class="eyebrow">Research observatory</div><h1>科研成果<span class="title-dot">.</span></h1><p>从项目、研究者与技术突破，发现下一条创业线索。</p></div><div class="count-chip"><b id="research-count">—</b> 项成果</div></div><div class="filter-bar"><label class="searchbox"><input id="research-search" aria-label="搜索科研成果" placeholder="搜索项目、研究者、院校或技术"></label><select id="research-university" aria-label="科研院校"><option value="">全部院校</option></select><select id="research-period" aria-label="科研报道时间"><option value="all">全部记录</option><option value="1">近1个月报道</option><option value="3">近3个月报道</option></select></div><div id="research-results" class="panel" aria-live="polite"></div><div class="stream-pagination"><button id="research-more" class="text-link">加载更多成果 ↓</button></div><p class="data-footnote">按报道时间浏览，成果日期单独标注。科研项目独立于公司库；出现明确创业主体后再关联公司档案。</p></section>
       <section class="view" id="view-statistics">
         <div class="page-title"><div><div class="eyebrow">Ecosystem intelligence</div><h1>看见资本流向<span class="title-dot">.</span></h1><p>从院校、赛道与融资节奏，观察港校创业生态。</p></div><select id="stats-window" aria-label="统计时间范围"><option value="all">全部年份</option><option value="3">近 3 个月</option><option value="6">近 6 个月</option><option value="12">近 12 个月</option><option value="36">近 3 年</option><option value="custom">自定义日期</option></select></div>
         <div id="stats-custom" class="range-controls hidden"><label>开始日期 <input type="date" id="stats-from"></label><label>结束日期 <input type="date" id="stats-to"></label></div><p class="range-note" id="stats-range-note"></p><div class="stats-kpis" id="stats-kpis"></div>
@@ -73,5 +76,5 @@
     </main>
   </div>
   <div class="modal-backdrop hidden" id="modal"><article class="detail-modal" role="dialog" aria-modal="true" aria-label="公司档案" tabindex="-1"><button class="modal-close" id="modal-close" aria-label="关闭公司档案">×</button><div id="modal-content"></div></article></div>
-  <script src="app.js?v=ed585005445205b3"></script>
+  <script src="app.js?v=8aa52982328838f8"></script>
 </body></html>
