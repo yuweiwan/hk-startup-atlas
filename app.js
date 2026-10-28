@@ -308,9 +308,14 @@ function setupResearchFilters(){
   el.innerHTML='<option value="">全部院校</option>'+[...new Set(researchProjects.flatMap(p=>p.universities))].sort().map(x=>`<option>${escapeHtml(x)}</option>`).join('');el.value=old;
 }
 function renderCompanyNews(e){
-  const company=companies.find(c=>c.id===e.companyId);
-  const sourceLinks=[...new Map([...(e.sources||[]),...(company?.profileSources||[])].map(s=>[s.url,s])).values()];
-  return `<details class="knowledge-row research-row company-news-row"><summary><span class="knowledge-date">${escapeHtml(streamDate(e))}</span><span class="knowledge-content"><span class="knowledge-heading"><b>${escapeHtml(e.name)}</b><span class="mini-tag">${newsTypeNames[e.type]}</span></span><span class="research-summary">${escapeHtml(e.summary)}</span></span><span class="research-expand">展开详情 ＋</span></summary><div class="research-details"><button class="company-news-name" data-company="${escapeHtml(e.companyId)}">查看公司背景与融资档案 ↗</button><h4>本篇相关进展</h4><ul>${(e.details||[e.summary]).map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul><h4>原文与补充资料</h4><div class="knowledge-sources">${streamSources(sourceLinks)}</div></div></details>`;
+  return `<button type="button" class="knowledge-row company-news-row" data-news-id="${escapeHtml(e.id)}" aria-label="查看${escapeHtml(e.name)}公司背景与融资档案"><span class="knowledge-date">${escapeHtml(streamDate(e))}</span><span class="knowledge-content"><span class="knowledge-heading"><b>${escapeHtml(e.name)}</b><span class="mini-tag">${newsTypeNames[e.type]}</span></span><span class="research-summary">${escapeHtml(e.summary)}</span></span><span class="company-news-action">查看公司背景与融资档案 <span aria-hidden="true">↗</span></span></button>`;
+}
+function showCompanyNews(id){
+  const e=companyNews.find(x=>x.id===id);if(!e)return;
+  const company=companies.find(c=>c.id===e.companyId);if(!company)return;
+  showCompany(e.companyId);
+  const links=[...new Map([...(e.sources||[]),...(company.profileSources||[])].map(s=>[s.url,s])).values()];
+  $('#modal-content').insertAdjacentHTML('afterbegin',`<section class="modal-block news-drawer-context"><div class="eyebrow">公司动态 · ${escapeHtml(streamDate(e))}</div><h3>${escapeHtml(e.name)}</h3><p>${escapeHtml(e.summary)}</p><ul>${(e.details||[]).filter(t=>t!==e.summary).map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul><div class="knowledge-sources">${streamSources(links)}</div></section>`);
 }
 function renderKnowledgeStreams(){
   if(!$('#company-news'))return;
@@ -391,7 +396,7 @@ async function init() {
   ['news-search','news-type','news-period','research-search','research-period','research-university'].forEach(id=>$('#'+id).addEventListener('input',()=>{newsLimit=12;researchLimit=20;renderKnowledgeStreams();}));
   $('#news-more').addEventListener('click',()=>{newsLimit+=12;renderKnowledgeStreams();});
   $('#research-more').addEventListener('click',()=>{researchLimit+=20;renderKnowledgeStreams();});
-  $('#company-news').addEventListener('click',e=>{const b=e.target.closest('[data-company]');if(b)showCompany(b.dataset.company);});
+  $('#company-news').addEventListener('click',e=>{const b=e.target.closest('[data-news-id]');if(b)showCompanyNews(b.dataset.newsId);});
   ['calendar-search','calendar-period','calendar-type'].forEach(id=>$('#'+id)?.addEventListener('input',renderCalendar));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshData();});
   $('#investor-profile').addEventListener('click',e=>{const card=e.target.closest('[data-company]');if(card)showCompany(card.dataset.company);});

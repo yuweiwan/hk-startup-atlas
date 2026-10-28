@@ -5,9 +5,9 @@
   "mode": "published",
   "error": null,
   "assetRevisions": {
-    "index.html": "d5fc8042c887966cc0f5c82367d2afe03db7418e83d971abe389120eb9b6789b",
-    "app.js": "0de83bbb53091a7f14ff8b6193b44664f2352562f0a8d409c69784d09983ccab",
-    "style.css": "06c3fc40ac6cd4f774a25c77946d9452473602b5f592961ed0ff5f2062cf7ebc",
+    "index.html": "121f4a9f119809023eaadc2a5e7a3d9d197252fbefe7c4ce251f8bc248479d24",
+    "app.js": "8fa091a220bd92643f716a1a0bffaab2a1ab43361f1fbf1df865900e3cea9060",
+    "style.css": "01ac644a21db97a62f8495ad7c1c91a411911efeb283a06da55ae9d693e5682c",
     "data.json.gz": "48c687b199e10ff9e6fc2b5b05683cbfccdddd0991fe9e36d656250bcc69f9c0"
   }
 }
