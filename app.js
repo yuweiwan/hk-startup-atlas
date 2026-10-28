@@ -307,12 +307,17 @@ function setupResearchFilters(){
   const el=$('#research-university');if(!el)return;const old=el.value;
   el.innerHTML='<option value="">全部院校</option>'+[...new Set(researchProjects.flatMap(p=>p.universities))].sort().map(x=>`<option>${escapeHtml(x)}</option>`).join('');el.value=old;
 }
+function renderCompanyNews(e){
+  const company=companies.find(c=>c.id===e.companyId);
+  const sourceLinks=[...new Map([...(e.sources||[]),...(company?.profileSources||[])].map(s=>[s.url,s])).values()];
+  return `<details class="knowledge-row research-row company-news-row"><summary><span class="knowledge-date">${escapeHtml(streamDate(e))}</span><span class="knowledge-content"><span class="knowledge-heading"><b>${escapeHtml(e.name)}</b><span class="mini-tag">${newsTypeNames[e.type]}</span></span><span class="research-summary">${escapeHtml(e.summary)}</span></span><span class="research-expand">展开详情 ＋</span></summary><div class="research-details"><button class="company-news-name" data-company="${escapeHtml(e.companyId)}">查看公司背景与融资档案 ↗</button><h4>本篇相关进展</h4><ul>${(e.details||[e.summary]).map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul><h4>原文与补充资料</h4><div class="knowledge-sources">${streamSources(sourceLinks)}</div></div></details>`;
+}
 function renderKnowledgeStreams(){
   if(!$('#company-news'))return;
   const q=$('#news-search').value.trim().toLowerCase(),type=$('#news-type').value,period=$('#news-period').value||'1';
   const news=companyNews.filter(e=>(!type||e.type===type)&&(!q||[e.name,e.summary].join(' ').toLowerCase().includes(q))&&streamInPeriod(e,period));
   $('#news-count').textContent=news.length;
-  $('#company-news').innerHTML=news.slice(0,newsLimit).map(e=>`<article class="knowledge-row"><div class="knowledge-date">${escapeHtml(streamDate(e))}</div><div class="knowledge-content"><div class="knowledge-heading"><button class="company-news-name" data-company="${escapeHtml(e.companyId)}">${escapeHtml(e.name)} ↗</button><span class="mini-tag">${newsTypeNames[e.type]}</span></div><p>${escapeHtml(e.summary)}</p><div class="knowledge-sources">${streamSources(e.sources)}</div></div></article>`).join('')||'<p class="empty-note">当前筛选下暂无公司动态。</p>';
+  $('#company-news').innerHTML=news.slice(0,newsLimit).map(renderCompanyNews).join('')||'<p class="empty-note">当前筛选下暂无公司动态。</p>';
   $('#news-more').hidden=news.length<=newsLimit;
   const rq=$('#research-search').value.trim().toLowerCase(),uni=$('#research-university').value,rp=$('#research-period').value||'all';
   const research=researchProjects.filter(e=>(!uni||e.universities.includes(uni))&&(!rq||[e.name,e.summary,...e.people,...e.tags,...e.universities].join(' ').toLowerCase().includes(rq))&&streamInPeriod(e,rp));
