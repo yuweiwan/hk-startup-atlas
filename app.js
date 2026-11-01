@@ -66,14 +66,14 @@ function valuationLabel(v) {
   return `≈ ${compactUSD(v.lowUsd)}–${compactUSD(v.highUsd)}`;
 }
 function getRecent() {
-  const months=Number($('#recent-months')?.value||1), scope=$('#recent-round-scope')?.value||'all';
-  const since=monthsAgo(months);
+  const months=Number($('#recent-months')?.value||3), scope=$('#recent-round-scope')?.value||'all';
+  const since=recentMonthStart(months);
   const status=$('#recent-status')?.value||'all';
   return companies.flatMap(c=>{
     const grouped=new Map();
     for(const e of c.activities||[]) {
-      const d=eventDate(e), start=e.date?.length===7?new Date(since.getFullYear(),since.getMonth(),1):since;
-      if(e.display===false||!e.date||e.date.length<7||!d||d<start||d>today) continue;
+      const d=eventDate(e);
+      if(e.display===false||!e.date||e.date.length<7||!d||d<since||d>today) continue;
       const month=e.date.slice(0,7); if(!grouped.has(month))grouped.set(month,[]); grouped.get(month).push(e);
     }
     return [...grouped.values()].flatMap(members=>{
@@ -95,13 +95,13 @@ function renderActivityRow(e) {
   return `<button class="recent-event ${e.isFirstFinancing?'is-first-financing':''} ${fundraising?'is-fundraising':''} ${statuses.includes('company_founded')?'is-company-founded':''}" data-company="${escapeHtml(e.company.id)}" aria-label="查看${escapeHtml(e.company.name)}公司档案"><span class="event-date"><span>${e.date.slice(0,4)}</span><b>${e.members.length>1?e.date.slice(5,7)+'月':fmtDate(e.date.slice(5))+(e.date.length===7?'月':'')}</b></span><span class="event-main"><span class="event-company"><b>${escapeHtml(e.company.name)}</b><span class="event-tags">${tags}${e.isFirstFinancing?'<span class="first-financing-label">首次融资</span>':''}</span></span>${rounds?`<span class="event-rounds">${rounds}</span>`:''}<span class="event-description" title="${escapeHtml(detail)}">${escapeHtml(detail)}</span></span><span class="event-amount">${amounts.length?amounts.map(a=>`<span>${escapeHtml(a)}</span>`).join(''):finance.length?'金额未披露':'—'}</span><span class="row-arrow" aria-hidden="true">↗</span></button>`;
 }
 function renderHome() {
-  const recent=getRecent(), months=Number($('#recent-months')?.value||1), scope=$('#recent-round-scope')?.value||'all';
-  const windowStart=monthsAgo(months); $('#recent-window').textContent=`${fmtDate(localDateValue(windowStart))} — ${fmtDate(localDateValue(today))} · 月份记录按月匹配，轮次仅筛选融资`;
+  const recent=getRecent(), months=Number($('#recent-months')?.value||3), scope=$('#recent-round-scope')?.value||'all';
+  const windowStart=recentMonthStart(months); $('#recent-window').textContent=`${fmtDate(localDateValue(windowStart))} — ${fmtDate(localDateValue(today))} · 月份记录按月匹配，轮次仅筛选融资`;
   $('#stat-companies').textContent=companies.length; $('#stat-funding').textContent=recent.length;
   $('#stat-funding-label').textContent=`近 ${months} 个月动态`;
   $('#home-signal-window').textContent=`近 ${months} 个月`;
   $('#funding-result-count').textContent=recent.length;
-  $('#home-round-note').textContent=`${scope==='pre_a'?'A 轮之前':'全部轮次'} · ${activityLabels[$('#recent-status')?.value]||'全部状态'}`;
+  $('#home-round-note').textContent=`${scope==='pre_a'?'A 轮之前（未命名轮次不在此列）':'全部轮次'} · ${activityLabels[$('#recent-status')?.value]||'全部状态'}`;
   $('#recent-funding').innerHTML=recent.length?recent.map(renderActivityRow).join(''):`<div class="empty-note"><b>这个窗口里暂时没有对应动态</b><p>可尝试近 3 个月，或切换状态及轮次。没有可靠月份的记录仍保留在公司档案。</p></div>`;
   const sectors=new Map();recent.forEach(e=>{const key=e.company.primarySectors?.[0]||'unknown';sectors.set(key,(sectors.get(key)||0)+1);});
   const ranked=[...sectors].sort((a,b)=>b[1]-a[1]);
@@ -167,6 +167,10 @@ function monthsAgo(months) {
   const d=new Date(today.getFullYear(),today.getMonth()-months,1);
   d.setDate(Math.min(today.getDate(),new Date(d.getFullYear(),d.getMonth()+1,0).getDate()));
   return d;
+}
+function recentMonthStart(months) {
+  const count=Math.max(1,Number(months)||1);
+  return new Date(today.getFullYear(),today.getMonth()-(count-1),1);
 }
 function statsBounds() {
   const value=$('#stats-window').value;
@@ -300,7 +304,7 @@ function streamInPeriod(e,period) {
   if(period==='all')return true;
   const value=e.reportedAt||e.date;
   if(!value||value.length<7)return false;
-  const since=monthsAgo(Number(period));
+  const since=recentMonthStart(Number(period)||3);
   return value.slice(0,7)>=localDateValue(since).slice(0,7)&&value.slice(0,7)<=calendarToday().slice(0,7);
 }
 function setupResearchFilters(){
@@ -319,7 +323,7 @@ function showCompanyNews(id){
 }
 function renderKnowledgeStreams(){
   if(!$('#company-news'))return;
-  const q=$('#news-search').value.trim().toLowerCase(),type=$('#news-type').value,period=$('#news-period').value||'1';
+  const q=$('#news-search').value.trim().toLowerCase(),type=$('#news-type').value,period=$('#news-period').value||'3';
   const news=companyNews.filter(e=>(!type||e.type===type)&&(!q||[e.name,e.summary].join(' ').toLowerCase().includes(q))&&streamInPeriod(e,period));
   $('#news-count').textContent=news.length;
   $('#company-news').innerHTML=news.slice(0,newsLimit).map(renderCompanyNews).join('')||'<p class="empty-note">当前筛选下暂无公司动态。</p>';
