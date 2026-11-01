@@ -1,5 +1,5 @@
 {
-  "revision": "113525a9a7edca11e8900f5c6dd75c61c528ba605aa1f9fd21604827ddfe1e20",
+  "revision": "f2ed6dc88db110b36a7fef8d3218ae8a3e9ac976f76711f6cc585325f451e62d",
   "count": 256,
   "asOf": "2026-11-01",
   "mode": "published",
@@ -8,6 +8,6 @@
     "index.html": "121f4a9f119809023eaadc2a5e7a3d9d197252fbefe7c4ce251f8bc248479d24",
     "app.js": "8fa091a220bd92643f716a1a0bffaab2a1ab43361f1fbf1df865900e3cea9060",
     "style.css": "01ac644a21db97a62f8495ad7c1c91a411911efeb283a06da55ae9d693e5682c",
-    "data.json.gz": "7fc62ad9bd6b55b1530dc2c72d853392503b30c39c2c28272a171a364a0a0f37"
+    "data.json.gz": "d4b9df75830269505094ae94fc0260a1e07844241a93b52ac1e49c78adc43b24"
   }
 }
