@@ -1,13 +1,13 @@
 {
-  "revision": "186cb37dd4848482de6fbf1e557ac560f941daf1e572112d5e4bdb64145e90b0",
+  "revision": "18be6d6124eb538249b1d79afc259b936baffd82806af7c01e97efffd1891ed6",
   "count": 279,
   "asOf": "2026-11-18",
   "mode": "published",
   "error": null,
   "assetRevisions": {
-    "index.html": "9d7f755038243b5a965267e339f4b25b8b56cdc266caf9db3e21e306e1d7fc9f",
-    "app.js": "eb39178028ea54437c866e94056598a5e85c32227d6664522255c04b888d73be",
+    "index.html": "ab44281ac315738dcc21b7f912bf57ab737bb0ac4c06be8ad1661bbae6f6426a",
+    "app.js": "72b983b72a50418e343061b9b37d84e688a89769c20d8e9baabf0a331be05d1b",
     "style.css": "01ac644a21db97a62f8495ad7c1c91a411911efeb283a06da55ae9d693e5682c",
-    "data.json.gz": "1a812c0e8029c2a1af74964dfb8cae89f17e801c3bbba9d3711bd515b371d4de"
+    "data.json.gz": "f21fd8cc3a1409553cd30e49e8d0e818961b1018e03cb610e1af884ff763abaf"
   }
 }

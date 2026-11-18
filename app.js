@@ -28,7 +28,7 @@ function renderCalendar() {
   if(!$('#calendar-period'))return;
   const day=calendarToday(), period=$('#calendar-period').value||'upcoming', type=$('#calendar-type').value, q=$('#calendar-search').value.trim().toLowerCase();
   const ordered=[...ventureEvents].sort((a,b)=>a.startDate.localeCompare(b.startDate)||a.id.localeCompare(b.id));
-  const current=ordered.filter(e=>e.endDate>=day&&e.status==='scheduled');
+  const current=ordered.filter(e=>e.endDate>=day&&e.status==='scheduled'&&(!e.deadline||e.deadline>=day));
   $('#home-events').innerHTML=current.slice(0,3).map(calendarCard).join('')||'<p class="calendar-empty">暂无近期活动。</p>';
   let rows=ordered.filter(e=>(period==='all'||(period==='past'?e.endDate<day:e.endDate>=day))&&(!type||e.type===type)&&(!q||[e.title,e.summary,e.location,e.organizer].join(' ').toLowerCase().includes(q)));
   if(period==='past')rows.reverse();
